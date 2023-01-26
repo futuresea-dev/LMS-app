@@ -106,7 +106,8 @@
             on_press:
                 root.manager.transition.direction = 'right'
                 root.manager.current = 'RegisterMenu'
-
+        
+        
 # Main menu 
 <MainMenuScreen>
 
@@ -237,7 +238,7 @@
                 markup: True
                 halign: "left"
                 color: "#CCCCCC"
-                text: "[b]So... This is Barare App\nI made this for automate some boring stuff or maybe some hacking tools!\n\n[color=#FF0000]Website[/color]:\n    Kourva.github.io\n\n[color=#FF0000]Telegram[/color]:\n    Kourva.t.me\n\n[color=#FF0000]Github[/color]:\n    Kourva[/b]"
+                text: "[b]So... This is LMS App\n\n[/b]"
 
         # Main menu button
         Button:
@@ -298,7 +299,7 @@
         #  Username
         Label:
             markup: True
-            text: "[b][font=Barare]Barare Member[/font][/b]"
+            text: "[b][font=Barare]Member[/font][/b]"
             pos_hint: {"center_y":0.70}
 
         # Profile information
@@ -309,11 +310,12 @@
             pos_hint: {"center_y":0.3, "center_x":0.5}
 
             Label:
+                id: profile_txt
                 font_name: "RobotoMono-Regular"
                 markup: True
                 halign: "left"
                 color: "#CCCCCC"
-                text: "[b]Status:\n[color=#FF0000]    Online [/color]\n\nUsername:[color=#FF0000]\n    User[/color]\n\nPassword:\n[color=#FF0000]    admin[/color]\n\nBio:\n[color=#FF0000]    Hack the planet[/b]"
+                text: ""
 
         # Main menu button
         Button:

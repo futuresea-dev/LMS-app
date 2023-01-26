@@ -30,12 +30,6 @@ with open("main.kv") as kv:
 
 HOST_URL = 'http://localhost:8000/'
 
-def invalidForm():
-    pop = Popup(title='Invalid Form',
-                  content=Label(text='Please fill in all inputs with valid information.'),
-                  size_hint=(None, None), size=(400, 400))
-
-    pop.open()
 
 # Login menu screens class
 class LoginMenuScreen(Screen):
@@ -44,7 +38,7 @@ class LoginMenuScreen(Screen):
     def login(self, email, password, errorlable):
         if email != "":
             if email != '':
-                params = json.dumps({'email': email, 'password': password})
+                params = json.dumps({'username': email, 'password': password})
                 headers = {'Content-type': 'application/json',
                         'Accept': 'application/json'}
                 req = UrlRequest(HOST_URL+'login/', method='POST', on_success=self.user_home_welcome, on_failure=self.user_login_error, req_body=params,
@@ -53,7 +47,20 @@ class LoginMenuScreen(Screen):
         else:
             errorlable.text = "[b][color=#FF0000][font=RobotoMono-Regular]Login Failed! Try Again[/font][/color][/b]"
 
-    def user_home_welcome(self, result, req):
+    def user_home_welcome(self, result, response):
+        token = 'jwt ' + response['token']
+        headers = {'Content-type': 'application/json',
+                           'Accept': 'application/json',
+                           'Authorization': token}
+        req = UrlRequest(HOST_URL+'api/user/', method='GET', on_success=self.go_to_home, on_failure=self.user_login_error,
+                                req_headers=headers)
+
+
+    def go_to_home(self, result, response):
+        id = response[0]["id"]
+        username = response[0]["username"]
+        email = response[0]["email"]
+        self.manager.get_screen("Profile").ids.profile_txt.text = "[b]Member ID:\n[color=#FF0000]    " + str(id) + " [/color]\n\nUsername:[color=#FF0000]\n    " + str(username) + "[/color]\n\nEmail:\n[color=#FF0000]    " + str(email) + "[/color]\n\n"
         self.manager.current = 'MainMenu'
 
     def user_login_error(self, *args):
@@ -88,19 +95,21 @@ class RegisterMenuScreen(Screen):
                                 req_headers=headers)
 
             else:
-                invalidForm()
+                errorlabel.text = "[b][color=#FF0000][font=RobotoMono-Regular]Register Failed! Please fill in all inputs with valid information.[/font][/color][/b]"
         except EmailNotValidError as e:
-            invalidForm()
+            errorlabel.text = "[b][color=#FF0000][font=RobotoMono-Regular]Register Failed! Please fill in all inputs with valid information.[/font][/color][/b]"
     
     def user_verify_email(self, result, req):
         self.manager.current = 'LoginMenu'
 
     def user_register_error(self, *args):
-        self.errorlabel.text = "[b][color=#FF0000][font=RobotoMono-Regular]Login Failed! Try Again[/font][/color][/b]"
+        self.errorlabel.text = "[b][color=#FF0000][font=RobotoMono-Regular]Register Failed! Please fill in all inputs with valid information.[/font][/color][/b]"
 
 # Main class
 class LMSApp(App):
-
+    userToken = ""
+    userInfo = ""
+    profile_txt = ""
     # Build function
     def build(self):
 
@@ -131,6 +140,8 @@ class LMSApp(App):
         # Set current screen to Login menu and return root   
         self.root.current = 'LoginMenu'
         return self.root
+
+
 
 # run the class
 LMSApp().run()
