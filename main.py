@@ -2,7 +2,7 @@
 
 # This app made by futuresea-dev
 # Github: https://github.com/futuresea-dev
-
+# import all module
 import json
 import threading
 from functools import partial
@@ -24,43 +24,60 @@ from widgets.hover_flat_button import HoverFlatButton
 
 from widgets.searching_text import SearchingText
 
-# KIVY config file
+# KIVY config file, load kv file
 with open("main.kv") as kv:
     Builder.load_string(kv.read())
 
-HOST_URL = 'http://192.168.113.171:8000/'
+# SET API URL
+HOST_URL = 'http://localhost:8000/'
+
+# user login token
 userToken = StringProperty('')
+
+# favorite book list
 favList = []
 
 
 # Login menu screens class
-
-
 class LoginMenuScreen(Screen):
 
     # Check login password
     def login(self, email, password):
-        if email != "" and password != '':
-            params = json.dumps({'username': email, 'password': password})
-            headers = {'Content-type': 'application/json',
-                       'Accept': 'application/json'}
-            req = UrlRequest(HOST_URL + 'login/', method='POST', on_success=self.user_home_welcome,
-                             on_failure=self.user_login_error, req_body=params,
-                             req_headers=headers)
+        try:
+            # check valid email
+            validation = validate_email(email)
+            email = validation.email
+            if password != '':
+                params = json.dumps({'email': email, 'password': password})
+                headers = {'Content-type': 'application/json',
+                           'Accept': 'application/json'}
+                req = UrlRequest(HOST_URL + 'login/', method='POST', on_success=self.user_home_welcome,
+                                 on_failure=self.user_login_error, req_body=params,
+                                 req_headers=headers)
 
-        else:
-            toast("Please. fill the input fields")
+            else:
+                toast("Please. fill the input fields")
 
+        except EmailNotValidError as e:
+            toast("Login Failed! Email is invalid.")
+
+#   get user login info
     def user_home_welcome(self, result, response):
         global userToken
+        # set user token
         userToken = response['token']
         token = 'jwt ' + response['token']
         headers = {'Content-type': 'application/json',
                    'Accept': 'application/json',
                    'Authorization': token}
+        #    get user login info
         req = UrlRequest(HOST_URL + 'api/user/', method='GET', on_success=self.go_to_home,
                          on_failure=self.user_login_error,
                          req_headers=headers)
+
+
+#   set profile info and get book list
+
 
     def go_to_home(self, result, response):
         id = response[0]["id"]
@@ -68,13 +85,15 @@ class LoginMenuScreen(Screen):
         email = response[0]["email"]
         self.manager.get_screen("Profile").ids.profile_txt.text = "[b]Member ID:\n[color=#FF0000]    " + str(
             id) + " [/color]\n\nUsername:[color=#FF0000]\n    " + str(username) + "[/color]\n\nEmail:\n[" \
-                                                                                  "color=#FF0000]    " + str(email) + "[/color]\n\n "
+                                                                                  "color=#FF0000]    " + \
+            str(email) + "[/color]\n\n "
         toast("login success!")
         self.manager.get_screen("MainMenu").search("")
         self.manager.get_screen("FavoriteMenu").search()
         self.manager.get_screen("MainMenu").add_book_widgets()
         self.manager.current = 'MainMenu'
 
+#   handle login error and show toast to user.
     def user_login_error(self, result, response):
 
         if len(response) == 0:
@@ -93,8 +112,7 @@ class LoginMenuScreen(Screen):
             else:
                 toast(error)
 
-
-
+# Main Menu Screen Class
 
 
 class MainMenuScreen(Screen):
@@ -105,6 +123,7 @@ class MainMenuScreen(Screen):
 
     pass
 
+#  add book to book list view.
     @mainthread
     def add_book_widgets(self):
         global favList
@@ -134,6 +153,8 @@ class MainMenuScreen(Screen):
         self.ids.search_button.canvas.get_group(
             'hidden')[0].rgba = (0, 0, 0, 0)
 
+# when user click the search button, get book list
+
     def search(self, query):
         self.ids.scroll_box.clear_widgets()
         self.searching_text = SearchingText()
@@ -157,11 +178,14 @@ class MainMenuScreen(Screen):
 
         self.add_book_widgets()
 
+# hide, show book description
+
     def description(self, instance):
         if instance.ids.book_summary.text == "...":
             instance.ids.book_summary.text = instance.description
         else:
             instance.ids.book_summary.text = "..."
+# when user click favorite button, set favorite add/remove handle
 
     def set_favorite(self, instance):
         global userToken
@@ -183,29 +207,26 @@ class MainMenuScreen(Screen):
                              req_body=params,
                              req_headers=headers)
 
+#  toast success, fail (add/remove)
     def success_add_toast(self, instance, result, response):
         toast('Add Favorite Success')
         # self.search(self.ids.searchbar.text)
         instance.ids.favorite_btn.text = "Remove Favorite"
 
-
-
     def fail_add_toast(self, result, response):
         toast('Add Favorite Failed')
-
 
     def success_delete_toast(self, instance, result, response):
         toast('Remove Favorite Success')
         # self.search(self.ids.searchbar.text)
         instance.ids.favorite_btn.text = "Add Favorite"
 
-
     def fail_delete_toast(self, result, response):
         toast('Remove Favorite Failed')
 
 
 class BooksBackend():
-
+    # get book list and filter by name.
     def scrape_all(self, text):
         try:
             page = requests.get(
@@ -261,7 +282,7 @@ class BooksBackend():
 
 
 class FavoriteBackend():
-
+    # get favorite book list by user
     def scrape_all(self):
         try:
             global userToken
@@ -420,6 +441,8 @@ class FavoriteMenuScreen(Screen):
     def fail_delete_toast(self, result, response):
         toast('Remove Favorite Failed')
 
+# Register Screen Class
+
 
 class RegisterMenuScreen(Screen):
 
@@ -440,11 +463,12 @@ class RegisterMenuScreen(Screen):
                 toast(
                     "Register Failed! Please fill in all inputs with valid information.")
         except EmailNotValidError as e:
-            toast("Register Failed! Please fill in all inputs with valid information.")
+            toast("Register Failed! Email is invalid.")
 
     def user_verify_email(self, result, req):
         toast("Register Success. Please login.")
         self.manager.current = 'LoginMenu'
+# handle register error
 
     def user_register_error(self, result, response):
         if len(response) == 0:
