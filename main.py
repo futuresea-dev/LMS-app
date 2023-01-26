@@ -3,43 +3,26 @@
 # This app made by futuresea-dev
 # Github: https://github.com/futuresea-dev
 
-# Imports
-import random
-from sys import exit
-from kivy.app import App
-from kivy.clock import Clock
-from kivy.lang import Builder
-from kivy.uix.label import Label
-from kivy.uix.button import Button
-from kivy.uix.textinput import TextInput
-from kivy.uix.scrollview import ScrollView
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.gridlayout import GridLayout
-from kivy.network.urlrequest import UrlRequest
-from kivy.uix.screenmanager import ScreenManager, Screen, WipeTransition
-from kivy.uix.actionbar import ActionBar, ActionView, ActionPrevious
-from kivy.properties import ObjectProperty
-from kivy.uix.popup import Popup
-from email_validator import validate_email, EmailNotValidError
 import json
-from widgets.searching_text import SearchingText
-from kivymd.uix.gridlayout import MDGridLayout
-import requests
-from kivymd.uix.screen import MDScreen
-from kivymd.uix.gridlayout import MDGridLayout
-import webbrowser
-from datetime import datetime
-from kivy.lang import Builder
 import threading
+from functools import partial
+
+import requests
+from email_validator import validate_email, EmailNotValidError
 from kivy.clock import mainthread
-from kivymd.toast import toast
+from kivy.lang import Builder
+from kivy.network.urlrequest import UrlRequest
+from kivy.properties import ListProperty, StringProperty, NumericProperty
+# Imports
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.screenmanager import ScreenManager, Screen
 from kivymd.app import MDApp
+from kivymd.toast import toast
+from kivymd.uix.gridlayout import MDGridLayout
 from widgets.hover_icon_button import HoverIconButton
 from widgets.hover_flat_button import HoverFlatButton
-from widgets.custom_scroll import CustomScroll
+
 from widgets.searching_text import SearchingText
-from kivy.properties import ListProperty, StringProperty, NumericProperty
-from functools import partial
 
 # KIVY config file
 with open("main.kv") as kv:
@@ -48,6 +31,7 @@ with open("main.kv") as kv:
 HOST_URL = 'http://192.168.113.171:8000/'
 userToken = StringProperty('')
 favList = []
+
 
 # Login menu screens class
 
@@ -60,7 +44,8 @@ class LoginMenuScreen(Screen):
             params = json.dumps({'username': email, 'password': password})
             headers = {'Content-type': 'application/json',
                        'Accept': 'application/json'}
-            req = UrlRequest(HOST_URL+'login/', method='POST', on_success=self.user_home_welcome, on_failure=self.user_login_error, req_body=params,
+            req = UrlRequest(HOST_URL + 'login/', method='POST', on_success=self.user_home_welcome,
+                             on_failure=self.user_login_error, req_body=params,
                              req_headers=headers)
 
         else:
@@ -73,7 +58,8 @@ class LoginMenuScreen(Screen):
         headers = {'Content-type': 'application/json',
                    'Accept': 'application/json',
                    'Authorization': token}
-        req = UrlRequest(HOST_URL+'api/user/', method='GET', on_success=self.go_to_home, on_failure=self.user_login_error,
+        req = UrlRequest(HOST_URL + 'api/user/', method='GET', on_success=self.go_to_home,
+                         on_failure=self.user_login_error,
                          req_headers=headers)
 
     def go_to_home(self, result, response):
@@ -81,7 +67,8 @@ class LoginMenuScreen(Screen):
         username = response[0]["username"]
         email = response[0]["email"]
         self.manager.get_screen("Profile").ids.profile_txt.text = "[b]Member ID:\n[color=#FF0000]    " + str(
-            id) + " [/color]\n\nUsername:[color=#FF0000]\n    " + str(username) + "[/color]\n\nEmail:\n[color=#FF0000]    " + str(email) + "[/color]\n\n"
+            id) + " [/color]\n\nUsername:[color=#FF0000]\n    " + str(username) + "[/color]\n\nEmail:\n[" \
+                                                                                  "color=#FF0000]    " + str(email) + "[/color]\n\n "
         toast("login success!")
         self.manager.get_screen("MainMenu").search("")
         self.manager.get_screen("FavoriteMenu").search()
@@ -108,11 +95,39 @@ class LoginMenuScreen(Screen):
 
 
 # Main menu screen class
+def success_add_toast(instance, result, response):
+    toast('Add Favorite Success')
+    # self.search(self.ids.searchbar.text)
+    instance.ids.favorite_btn.text = "Remove Favorite"
+
+
+def description(instance):
+    if instance.ids.book_summary.text == "...":
+        instance.ids.book_summary.text = instance.description
+    else:
+        instance.ids.book_summary.text = "..."
+
+
+def fail_add_toast(result, response):
+    toast('Add Favorite Failed')
+
+
+def success_delete_toast(instance, result, response):
+    toast('Remove Favorite Success')
+    # self.search(self.ids.searchbar.text)
+    instance.ids.favorite_btn.text = "Add Favorite"
+
+
+def fail_delete_toast(result, response):
+    toast('Remove Favorite Failed')
+
+
 class MainMenuScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.backend = BooksBackend()
         self.results = None
+
     pass
 
     @mainthread
@@ -167,12 +182,6 @@ class MainMenuScreen(Screen):
 
         self.add_book_widgets()
 
-    def description(self, instance):
-        if instance.ids.book_summary.text == "...":
-            instance.ids.book_summary.text = instance.description
-        else:
-            instance.ids.book_summary.text = "..."
-
     def set_favorite(self, instance):
         global userToken
         custom_id = instance.ids.favorite_area.custom_id
@@ -183,27 +192,15 @@ class MainMenuScreen(Screen):
         params = json.dumps(
             {'book': int(custom_id)})
         if "Add" in btn_txt:
-            req = UrlRequest(HOST_URL+'api/favorite/', method='POST', on_success=partial(self.success_add_toast, instance), on_failure=self.fail_add_toast, req_body=params,
+            req = UrlRequest(HOST_URL + 'api/favorite/', method='POST',
+                             on_success=partial(success_add_toast, instance), on_failure=fail_add_toast,
+                             req_body=params,
                              req_headers=headers)
         else:
-            req = UrlRequest(HOST_URL+'api/favorite/', method='Delete', on_success=partial(self.success_delete_toast, instance), on_failure=self.fail_delete_toast, req_body=params,
+            req = UrlRequest(HOST_URL + 'api/favorite/', method='Delete',
+                             on_success=partial(success_delete_toast, instance), on_failure=fail_delete_toast,
+                             req_body=params,
                              req_headers=headers)
-
-    def success_add_toast(self, instance, result, response):
-        toast('Add Favorite Success')
-        # self.search(self.ids.searchbar.text)
-        instance.ids.favorite_btn.text = "Remove Favorite"
-
-    def fail_add_toast(self, result, response):
-        toast('Add Favorite Failed')
-
-    def success_delete_toast(self, instance, result, response):
-        toast('Remove Favorite Success')
-        # self.search(self.ids.searchbar.text)
-        instance.ids.favorite_btn.text = "Add Favorite"
-
-    def fail_delete_toast(self, result, response):
-        toast('Remove Favorite Failed')
 
 
 class BooksBackend():
@@ -325,16 +322,20 @@ class FavoriteBackend():
             favList = []
             return None
 
+
 # Book Card class
 
 
 class BookCard(MDGridLayout):
     pass
+
+
 # Profile screen class
 
 
 class ProfileScreen(Screen):
     pass
+
 
 # Favorite menu screen class
 
@@ -344,6 +345,7 @@ class FavoriteMenuScreen(Screen):
         super().__init__(**kwargs)
         self.backend = FavoriteBackend()
         self.results = None
+
     pass
 
     @mainthread
@@ -376,7 +378,7 @@ class FavoriteMenuScreen(Screen):
         self.thread.daemon = True
         self.thread.start()
 
-    @ mainthread
+    @mainthread
     def no_internet(self):
         self.ids.scroll_box.remove_widget(self.searching_text)
 
@@ -406,7 +408,8 @@ class FavoriteMenuScreen(Screen):
         params = json.dumps(
             {'book': int(custom_id)})
         if "Remove" in btn_txt:
-            req = UrlRequest(HOST_URL+'api/favorite/', method='Delete', on_success=self.success_delete_toast, on_failure=self.fail_delete_toast, req_body=params,
+            req = UrlRequest(HOST_URL + 'api/favorite/', method='Delete', on_success=self.success_delete_toast,
+                             on_failure=self.fail_delete_toast, req_body=params,
                              req_headers=headers)
 
     def success_delete_toast(self, result, response):
@@ -415,10 +418,6 @@ class FavoriteMenuScreen(Screen):
 
     def fail_delete_toast(self, result, response):
         toast('Remove Favorite Failed')
-
-
-class BookCard(GridLayout):
-    pass
 
 
 class RegisterMenuScreen(Screen):
@@ -432,7 +431,7 @@ class RegisterMenuScreen(Screen):
                     {'email': email, 'password': password, 'username': username})
                 headers = {'Content-type': 'application/json',
                            'Accept': 'application/json'}
-                req = UrlRequest(HOST_URL+'register/', method='POST', on_success=self.user_verify_email,
+                req = UrlRequest(HOST_URL + 'register/', method='POST', on_success=self.user_verify_email,
                                  on_failure=self.user_register_error, req_body=params,
                                  req_headers=headers)
 
@@ -466,8 +465,6 @@ class RegisterMenuScreen(Screen):
 
 
 class LMSApp(MDApp):
-
-    userInfo = ""
     color_theme = 'dark'
     bg_color = ListProperty([29 / 255, 29 / 255, 29 / 255, 1])
     tile_color = ListProperty([40 / 255, 40 / 255, 40 / 255, 1])
@@ -482,31 +479,34 @@ class LMSApp(MDApp):
     home_icon_tooltip = StringProperty('Back')
     add_icon = StringProperty('plus-circle-outline')
     add_icon_tooltip = StringProperty('Create new')
+
     # Build function
 
-    def build(self):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.RegisterMenu = RegisterMenuScreen(name='RegisterMenu')
+        self.ProfileScreen = ProfileScreen(name='Profile')
+        self.FavoriteMenuScreen = FavoriteMenuScreen(name='FavoriteMenu')
+        self.MainMenuScreen = MainMenuScreen(name='MainMenu')
+        self.LoginMenuScreen = LoginMenuScreen(name='LoginMenu')
 
+    def build(self):
         # root screen manager
         self.root = ScreenManager()
 
         # Login menu screen
-        self.LoginMenuScreen = LoginMenuScreen(name='LoginMenu')
         self.root.add_widget(self.LoginMenuScreen)
 
         # Main menu screen
-        self.MainMenuScreen = MainMenuScreen(name='MainMenu')
         self.root.add_widget(self.MainMenuScreen)
 
         # Favorite menu screen
-        self.FavoriteMenuScreen = FavoriteMenuScreen(name='FavoriteMenu')
         self.root.add_widget(self.FavoriteMenuScreen)
 
         # Profile screen
-        self.ProfileScreen = ProfileScreen(name='Profile')
         self.root.add_widget(self.ProfileScreen)
 
         # Register screen
-        self.RegisterMenu = RegisterMenuScreen(name='RegisterMenu')
         self.root.add_widget(self.RegisterMenu)
 
         # Set current screen to Login menu and return root
