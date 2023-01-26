@@ -29,7 +29,7 @@ with open("main.kv") as kv:
     Builder.load_string(kv.read())
 
 # SET API URL
-HOST_URL = 'http://localhost:8000/'
+HOST_URL = 'http://192.168.113.171:8000/'
 
 # user login token
 userToken = StringProperty('')
