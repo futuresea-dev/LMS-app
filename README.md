@@ -1,30 +1,36 @@
+# Library Management System
 
-
-# Barare
 #### Kivy android app with login page | You can use it and add your functions !
+
 > Includes .kv file
 
-+ 6 screens
-+ Kmap solver (for test)
-+ Login page
-+ Backgroud image
-+ Action bar
-+ Guest login
-+ Profile page
-+ Dark theme
+- 6 screens
+- Kmap solver (for test)
+- Login page
+- Backgroud image
+- Action bar
+- Guest login
+- Profile page
+- Dark theme
 
 #### Oh password is `admin` BTW
 
 # Install
-+ clone
+
+- clone
+
 ```bash
-git clone https://github.com/Kourva/Barare
+git clone https://github.com/futuresea-dev/LMS_app
 ```
-+ requiremets
+
+- requiremets
+
 ```bash
 pip install kivy
 ```
-+ run
+
+- run
+
 ```bash
 python3 main.py
 ```

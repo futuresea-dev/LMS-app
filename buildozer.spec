@@ -1,13 +1,13 @@
 [app]
 
 # (str) Title of your application
-title = Barare
+title = LMS
 
 # (str) Package name
-package.name = Barare
+package.name = lms
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.Barare
+package.domain = org.lms
 
 # (str) Source code where the main.py live
 source.dir = .
