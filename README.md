@@ -4,29 +4,30 @@
 
 > Includes .kv file
 
-- 6 screens
-- Kmap solver (for test)
 - Login page
+- Signup page
+- Book List page
+- Book favorite page
 - Backgroud image
 - Action bar
-- Guest login
+- Search bar
 - Profile page
 - Dark theme
 
-#### Oh password is `admin` BTW
+#### 
 
 # Install
 
 - clone
 
 ```bash
-git clone https://github.com/futuresea-dev/LMS_app
+git clone https://github.com/futuresea-dev/LMS-app
 ```
 
 - requiremets
 
 ```bash
-pip install kivy
+pip install -r requirements.txt
 ```
 
 - run
