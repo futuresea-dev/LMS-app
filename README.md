@@ -1,17 +1,49 @@
 # Library Management System
 
-#### Kivy android app with login page | You can use it and add your functions !
+#### Kivy android app with login page
+
+Create the simplest Kivy mobile app with django backend
+
+As the user of this app, sign in using my email and password
+see a list of the all books with their authors
+add/remove books to my favorites
+
 
 > Includes .kv file
 
 - Login page
+
+
+![alt text](https://github.com/futuresea-dev/LMS-app/blob/main/image/Screenshot_5.png?raw=true)
+
+
 - Signup page
-- Book List page
+
+
+![alt text](https://github.com/futuresea-dev/LMS-app/blob/main/image/Screenshot_1.png?raw=true)
+
+
+- Book List page with author, description, price and favorite (add/remove)
+
+
+![alt text](https://github.com/futuresea-dev/LMS-app/blob/main/image/Screenshot_2.png?raw=true)
+
+
 - Book favorite page
+
+
+![alt text](https://github.com/futuresea-dev/LMS-app/blob/main/image/Screenshot_3.png?raw=true) 
+
+
+- Profile page
+
+
+![alt text](https://github.com/futuresea-dev/LMS-app/blob/main/image/Screenshot_3.png?raw=true) 
+
+
 - Backgroud image
 - Action bar
 - Search bar
-- Profile page
 - Dark theme
 
 #### 
