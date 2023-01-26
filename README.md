@@ -38,7 +38,7 @@ add/remove books to my favorites
 - Profile page
 
 
-![alt text](https://github.com/futuresea-dev/LMS-app/blob/main/image/Screenshot_3.png?raw=true) 
+![alt text](https://github.com/futuresea-dev/LMS-app/blob/main/image/Screenshot_4.png?raw=true) 
 
 
 - Backgroud image
