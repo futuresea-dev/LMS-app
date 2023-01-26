@@ -94,32 +94,7 @@ class LoginMenuScreen(Screen):
                 toast(error)
 
 
-# Main menu screen class
-def success_add_toast(instance, result, response):
-    toast('Add Favorite Success')
-    # self.search(self.ids.searchbar.text)
-    instance.ids.favorite_btn.text = "Remove Favorite"
 
-
-def description(instance):
-    if instance.ids.book_summary.text == "...":
-        instance.ids.book_summary.text = instance.description
-    else:
-        instance.ids.book_summary.text = "..."
-
-
-def fail_add_toast(result, response):
-    toast('Add Favorite Failed')
-
-
-def success_delete_toast(instance, result, response):
-    toast('Remove Favorite Success')
-    # self.search(self.ids.searchbar.text)
-    instance.ids.favorite_btn.text = "Add Favorite"
-
-
-def fail_delete_toast(result, response):
-    toast('Remove Favorite Failed')
 
 
 class MainMenuScreen(Screen):
@@ -182,6 +157,12 @@ class MainMenuScreen(Screen):
 
         self.add_book_widgets()
 
+    def description(self, instance):
+        if instance.ids.book_summary.text == "...":
+            instance.ids.book_summary.text = instance.description
+        else:
+            instance.ids.book_summary.text = "..."
+
     def set_favorite(self, instance):
         global userToken
         custom_id = instance.ids.favorite_area.custom_id
@@ -193,14 +174,34 @@ class MainMenuScreen(Screen):
             {'book': int(custom_id)})
         if "Add" in btn_txt:
             req = UrlRequest(HOST_URL + 'api/favorite/', method='POST',
-                             on_success=partial(success_add_toast, instance), on_failure=fail_add_toast,
+                             on_success=partial(self.success_add_toast, instance), on_failure=self.fail_add_toast,
                              req_body=params,
                              req_headers=headers)
         else:
             req = UrlRequest(HOST_URL + 'api/favorite/', method='Delete',
-                             on_success=partial(success_delete_toast, instance), on_failure=fail_delete_toast,
+                             on_success=partial(self.success_delete_toast, instance), on_failure=self.fail_delete_toast,
                              req_body=params,
                              req_headers=headers)
+
+    def success_add_toast(self, instance, result, response):
+        toast('Add Favorite Success')
+        # self.search(self.ids.searchbar.text)
+        instance.ids.favorite_btn.text = "Remove Favorite"
+
+
+
+    def fail_add_toast(self, result, response):
+        toast('Add Favorite Failed')
+
+
+    def success_delete_toast(self, instance, result, response):
+        toast('Remove Favorite Success')
+        # self.search(self.ids.searchbar.text)
+        instance.ids.favorite_btn.text = "Add Favorite"
+
+
+    def fail_delete_toast(self, result, response):
+        toast('Remove Favorite Failed')
 
 
 class BooksBackend():
