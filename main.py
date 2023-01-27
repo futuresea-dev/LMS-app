@@ -35,7 +35,7 @@ icons_path = os.path.join(tools_path, 'Barare.ttf')
 Config.set('kivy', 'default_font', [icons_path])
 
 # SET API URL
-HOST_URL = 'http://192.168.113.171:8000/'
+HOST_URL = 'http://10.0.2.2:8000/'
 
 # user login token
 userToken = StringProperty('')
