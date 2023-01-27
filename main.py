@@ -50,7 +50,7 @@ class LoginMenuScreen(Screen):
     # Check login password
     def login(self, email, password):
 
-        # check ;ogin info
+        # check login info
         if password != '' and email != '' and '@' in email:
             params = json.dumps({'email': email, 'password': password})
             headers = {'Content-type': 'application/json',
