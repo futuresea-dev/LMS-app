@@ -52,29 +52,37 @@ class LoginMenuScreen(Screen):
 
         # check login info
         if password != '' and email != '' and '@' in email:
-            params = json.dumps({'email': email, 'password': password})
-            headers = {'Content-type': 'application/json',
-                        'Accept': 'application/json'}
-            req = UrlRequest(HOST_URL + 'login/', method='POST', on_success=self.user_home_welcome,
-                                on_failure=self.user_login_error, req_body=params,
-                                req_headers=headers)
+            try:
+                params = json.dumps({'email': email, 'password': password})
+                headers = {'Content-type': 'application/json',
+                            'Accept': 'application/json'}
+                req = UrlRequest(HOST_URL + 'login/', method='POST', on_success=self.user_home_welcome,
+                                    on_failure=self.user_login_error, req_body=params,
+                                    req_headers=headers)
+            except Exception as e:
+                toast(str(e))
 
         else:
             toast("Please. fill the input fields")
 
+
 #   get user login info
     def user_home_welcome(self, result, response):
-        global userToken
-        # set user token
-        userToken = response['token']
-        token = 'jwt ' + response['token']
-        headers = {'Content-type': 'application/json',
-                   'Accept': 'application/json',
-                   'Authorization': token}
-        #    get user login info
-        req = UrlRequest(HOST_URL + 'api/user/', method='GET', on_success=self.go_to_home,
-                         on_failure=self.user_login_error,
-                         req_headers=headers)
+        try:
+
+            global userToken
+            # set user token
+            userToken = response['token']
+            token = 'jwt ' + response['token']
+            headers = {'Content-type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': token}
+            #    get user login info
+            req = UrlRequest(HOST_URL + 'api/user/', method='GET', on_success=self.go_to_home,
+                            on_failure=self.user_login_error,
+                            req_headers=headers)
+        except Exception as e:
+            toast(str(e))
 
 
 #   set profile info and get book list
@@ -448,15 +456,17 @@ class FavoriteMenuScreen(Screen):
 class RegisterMenuScreen(Screen):
 
     def register(self, username, email, password):
-
         if username != "" and password != "" and email != "" and '@' in email:
-            params = json.dumps(
-                {'email': email, 'password': password, 'username': username})
-            headers = {'Content-type': 'application/json',
-                        'Accept': 'application/json'}
-            req = UrlRequest(HOST_URL + 'register/', method='POST', on_success=self.user_verify_email,
-                                on_failure=self.user_register_error, req_body=params,
-                                req_headers=headers)
+            try:
+                params = json.dumps(
+                    {'email': email, 'password': password, 'username': username})
+                headers = {'Content-type': 'application/json',
+                            'Accept': 'application/json'}
+                req = UrlRequest(HOST_URL + 'register/', method='POST', on_success=self.user_verify_email,
+                                    on_failure=self.user_register_error, req_body=params,
+                                    req_headers=headers)
+            except Exception as e:
+                toast(str(e))
 
         else:
             toast(
