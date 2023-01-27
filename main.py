@@ -55,7 +55,7 @@ class LoginMenuScreen(Screen):
 
                 headers = {'Content-type': 'application/json',
                             'Accept': 'application/json'}
-                response = requests.post(HOST_URL + 'login/', json={'email': email, 'password': password}, headers=headers, timeout=5)
+                response = requests.post(HOST_URL + 'login/', json={'email': email, 'password': password}, headers=headers, timeout=5, verify=False)
                 if response.ok:
                     self.user_home_welcome(json.loads(response.text))
                 else:
@@ -79,7 +79,7 @@ class LoginMenuScreen(Screen):
                     'Accept': 'application/json',
                     'Authorization': token}
             #    get user login info
-            response = requests.get(HOST_URL + 'api/user/', headers=headers, timeout=5)
+            response = requests.get(HOST_URL + 'api/user/', headers=headers, timeout=5, verify=False)
             if response.ok:
                 self.go_to_home(json.loads(response.text))
             else:
@@ -207,13 +207,13 @@ class MainMenuScreen(Screen):
                    'Accept': 'application/json',
                    'Authorization': 'jwt ' + userToken}
         if "Add" in btn_txt:
-            response = requests.post(HOST_URL + 'api/favorite/', json={'book': int(custom_id)}, headers=headers, timeout=5)
+            response = requests.post(HOST_URL + 'api/favorite/', json={'book': int(custom_id)}, headers=headers, timeout=5, verify=False)
             if response.ok:
                 self.success_add_toast(instance)
             else:
                 self.fail_add_toast()
         else:          
-            response = requests.delete(HOST_URL + 'api/favorite/', json={'book': int(custom_id)}, headers=headers, timeout=5)
+            response = requests.delete(HOST_URL + 'api/favorite/', json={'book': int(custom_id)}, headers=headers, timeout=5, verify=False)
             if response.ok:
                 self.success_delete_toast(instance)
             else:
@@ -438,7 +438,7 @@ class FavoriteMenuScreen(Screen):
                    'Accept': 'application/json',
                    'Authorization': 'jwt ' + userToken}
         if "Remove" in btn_txt:
-            response = requests.delete(HOST_URL + 'api/favorite', json={'book': int(custom_id)}, headers=headers, timeout=5)
+            response = requests.delete(HOST_URL + 'api/favorite', json={'book': int(custom_id)}, headers=headers, timeout=5, verify=False)
             if response.ok:
                 self.success_delete_toast()
             else:
@@ -462,7 +462,7 @@ class RegisterMenuScreen(Screen):
                 headers = {'Content-type': 'application/json',
                             'Accept': 'application/json'}
                 
-                response = requests.post(HOST_URL + 'register/', json={'email': email, 'password': password, 'username': username}, headers=headers, timeout=5)
+                response = requests.post(HOST_URL + 'register/', json={'email': email, 'password': password, 'username': username}, headers=headers, timeout=5, verify=False)
                 if response.ok:
                     self.user_verify_email(json.loads(response.text))
                 else:
