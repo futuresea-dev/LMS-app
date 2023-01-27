@@ -8,7 +8,6 @@ import threading
 from functools import partial
 
 import requests
-from email_validator import validate_email, EmailNotValidError
 from kivy.clock import mainthread
 from kivy.lang import Builder
 from kivy.network.urlrequest import UrlRequest
@@ -36,7 +35,7 @@ icons_path = os.path.join(tools_path, 'Barare.ttf')
 Config.set('kivy', 'default_font', [icons_path])
 
 # SET API URL
-HOST_URL = 'http://10.0.2.2:8000/'
+HOST_URL = 'http://192.168.113.171:8000/'
 
 # user login token
 userToken = StringProperty('')
@@ -50,23 +49,18 @@ class LoginMenuScreen(Screen):
 
     # Check login password
     def login(self, email, password):
-        try:
-            # check valid email
-            validation = validate_email(email)
-            email = validation.email
-            if password != '':
-                params = json.dumps({'email': email, 'password': password})
-                headers = {'Content-type': 'application/json',
-                           'Accept': 'application/json'}
-                req = UrlRequest(HOST_URL + 'login/', method='POST', on_success=self.user_home_welcome,
-                                 on_failure=self.user_login_error, req_body=params,
-                                 req_headers=headers)
 
-            else:
-                toast("Please. fill the input fields")
+        # check ;ogin info
+        if password != '' and email != '' and '@' in email:
+            params = json.dumps({'email': email, 'password': password})
+            headers = {'Content-type': 'application/json',
+                        'Accept': 'application/json'}
+            req = UrlRequest(HOST_URL + 'login/', method='POST', on_success=self.user_home_welcome,
+                                on_failure=self.user_login_error, req_body=params,
+                                req_headers=headers)
 
-        except EmailNotValidError as e:
-            toast("Login Failed! Email is invalid.")
+        else:
+            toast("Please. fill the input fields")
 
 #   get user login info
     def user_home_welcome(self, result, response):
@@ -454,23 +448,19 @@ class FavoriteMenuScreen(Screen):
 class RegisterMenuScreen(Screen):
 
     def register(self, username, email, password):
-        try:
-            validation = validate_email(email)
-            email = validation.email
-            if username != "" and password != "":
-                params = json.dumps(
-                    {'email': email, 'password': password, 'username': username})
-                headers = {'Content-type': 'application/json',
-                           'Accept': 'application/json'}
-                req = UrlRequest(HOST_URL + 'register/', method='POST', on_success=self.user_verify_email,
-                                 on_failure=self.user_register_error, req_body=params,
-                                 req_headers=headers)
 
-            else:
-                toast(
-                    "Register Failed! Please fill in all inputs with valid information.")
-        except EmailNotValidError as e:
-            toast("Register Failed! Email is invalid.")
+        if username != "" and password != "" and email != "" and '@' in email:
+            params = json.dumps(
+                {'email': email, 'password': password, 'username': username})
+            headers = {'Content-type': 'application/json',
+                        'Accept': 'application/json'}
+            req = UrlRequest(HOST_URL + 'register/', method='POST', on_success=self.user_verify_email,
+                                on_failure=self.user_register_error, req_body=params,
+                                req_headers=headers)
+
+        else:
+            toast(
+                "Register Failed! Please fill in all inputs with valid information.")
 
     def user_verify_email(self, result, req):
         toast("Register Success. Please login.")
