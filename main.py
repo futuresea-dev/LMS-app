@@ -35,7 +35,7 @@ icons_path = os.path.join(tools_path, 'Barare.ttf')
 Config.set('kivy', 'default_font', [icons_path])
 
 # SET API URL
-HOST_URL = 'http://8.12.17.224:8000/'
+HOST_URL = 'http://10.0.2.2:8000/'
 
 # user login token
 userToken = StringProperty('')
@@ -52,35 +52,47 @@ class LoginMenuScreen(Screen):
 
         # check login info
         if password != '' and email != '' and '@' in email:
-            params = json.dumps({'email': email, 'password': password})
-            headers = {'Content-type': 'application/json',
-                        'Accept': 'application/json'}
-            req = UrlRequest(HOST_URL + 'login/', method='POST', on_success=self.user_home_welcome,
-                                on_failure=self.user_login_error, req_body=params,
-                                req_headers=headers)
+            try:
+
+                headers = {'Content-type': 'application/json',
+                            'Accept': 'application/json'}
+                response = requests.post(HOST_URL + 'login/', json={'email': email, 'password': password}, headers=headers, timeout=5)
+                if response.ok:
+                    self.user_home_welcome(json.loads(response.text))
+                else:
+                    self.user_login_error(json.loads(response.text))
+            except Exception as e:
+                toast(str(e))
 
         else:
             toast("Please. fill the input fields")
 
+
 #   get user login info
-    def user_home_welcome(self, result, response):
-        global userToken
-        # set user token
-        userToken = response['token']
-        token = 'jwt ' + response['token']
-        headers = {'Content-type': 'application/json',
-                   'Accept': 'application/json',
-                   'Authorization': token}
-        #    get user login info
-        req = UrlRequest(HOST_URL + 'api/user/', method='GET', on_success=self.go_to_home,
-                         on_failure=self.user_login_error,
-                         req_headers=headers)
+    def user_home_welcome(self, response):
+        try:
+
+            global userToken
+            # set user token
+            userToken = response['token']
+            token = 'jwt ' + response['token']
+            headers = {'Content-type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': token}
+            #    get user login info
+            response = requests.get(HOST_URL + 'api/user/', headers=headers, timeout=5)
+            if response.ok:
+                self.go_to_home(json.loads(response.text))
+            else:
+                self.user_login_error(response)['text'].json()
+        except Exception as e:
+            toast(str(e))
 
 
 #   set profile info and get book list
 
 
-    def go_to_home(self, result, response):
+    def go_to_home(self, response):
         id = response[0]["id"]
         username = response[0]["username"]
         email = response[0]["email"]
@@ -95,7 +107,7 @@ class LoginMenuScreen(Screen):
         self.manager.current = 'MainMenu'
 
 #   handle login error and show toast to user.
-    def user_login_error(self, result, response):
+    def user_login_error(self, response):
 
         if len(response) == 0:
             toast("Login Failed! Try Again")
@@ -195,34 +207,32 @@ class MainMenuScreen(Screen):
         headers = {'Content-type': 'application/json',
                    'Accept': 'application/json',
                    'Authorization': 'jwt ' + userToken}
-        params = json.dumps(
-            {'book': int(custom_id)})
         if "Add" in btn_txt:
-            req = UrlRequest(HOST_URL + 'api/favorite/', method='POST',
-                             on_success=partial(self.success_add_toast, instance), on_failure=self.fail_add_toast,
-                             req_body=params,
-                             req_headers=headers)
-        else:
-            req = UrlRequest(HOST_URL + 'api/favorite/', method='Delete',
-                             on_success=partial(self.success_delete_toast, instance), on_failure=self.fail_delete_toast,
-                             req_body=params,
-                             req_headers=headers)
+            response = requests.post(HOST_URL + 'api/favorite/', json={'book': int(custom_id)}, headers=headers, timeout=5)
+            if response.ok:
+                self.success_add_toast(instance)
+            else:
+                self.fail_add_toast()
+        else:          
+            response = requests.delete(HOST_URL + 'api/favorite/', json={'book': int(custom_id)}, headers=headers, timeout=5)
+            if response.ok:
+                self.success_delete_toast(instance)
+            else:
+                self.fail_delete_toast()
 
 #  toast success, fail (add/remove)
-    def success_add_toast(self, instance, result, response):
+    def success_add_toast(self, instance):
         toast('Add Favorite Success')
-        # self.search(self.ids.searchbar.text)
         instance.ids.favorite_btn.text = "Remove Favorite"
 
-    def fail_add_toast(self, result, response):
+    def fail_add_toast(self):
         toast('Add Favorite Failed')
 
-    def success_delete_toast(self, instance, result, response):
+    def success_delete_toast(self, instance):
         toast('Remove Favorite Success')
-        # self.search(self.ids.searchbar.text)
         instance.ids.favorite_btn.text = "Add Favorite"
 
-    def fail_delete_toast(self, result, response):
+    def fail_delete_toast(self):
         toast('Remove Favorite Failed')
 
 
@@ -428,18 +438,18 @@ class FavoriteMenuScreen(Screen):
         headers = {'Content-type': 'application/json',
                    'Accept': 'application/json',
                    'Authorization': 'jwt ' + userToken}
-        params = json.dumps(
-            {'book': int(custom_id)})
         if "Remove" in btn_txt:
-            req = UrlRequest(HOST_URL + 'api/favorite/', method='Delete', on_success=self.success_delete_toast,
-                             on_failure=self.fail_delete_toast, req_body=params,
-                             req_headers=headers)
+            response = requests.delete(HOST_URL + 'api/favorite', json={'book': int(custom_id)}, headers=headers, timeout=5)
+            if response.ok:
+                self.success_delete_toast()
+            else:
+                self.fail_delete_toast()
 
-    def success_delete_toast(self, result, response):
+    def success_delete_toast(self):
         toast('Remove Favorite Success')
         self.search()
 
-    def fail_delete_toast(self, result, response):
+    def fail_delete_toast(self):
         toast('Remove Favorite Failed')
 
 # Register Screen Class
@@ -448,26 +458,29 @@ class FavoriteMenuScreen(Screen):
 class RegisterMenuScreen(Screen):
 
     def register(self, username, email, password):
-
         if username != "" and password != "" and email != "" and '@' in email:
-            params = json.dumps(
-                {'email': email, 'password': password, 'username': username})
-            headers = {'Content-type': 'application/json',
-                        'Accept': 'application/json'}
-            req = UrlRequest(HOST_URL + 'register/', method='POST', on_success=self.user_verify_email,
-                                on_failure=self.user_register_error, req_body=params,
-                                req_headers=headers)
+            try:
+                headers = {'Content-type': 'application/json',
+                            'Accept': 'application/json'}
+                
+                response = requests.post(HOST_URL + 'register/', json={'email': email, 'password': password, 'username': username}, headers=headers, timeout=5)
+                if response.ok:
+                    self.user_verify_email(json.loads(response.text))
+                else:
+                    self.user_register_error(json.loads(response.text))
+            except Exception as e:
+                toast(str(e))
 
         else:
             toast(
                 "Register Failed! Please fill in all inputs with valid information.")
 
-    def user_verify_email(self, result, req):
+    def user_verify_email(self, response):
         toast("Register Success. Please login.")
         self.manager.current = 'LoginMenu'
 # handle register error
 
-    def user_register_error(self, result, response):
+    def user_register_error(self, response):
         if len(response) == 0:
             toast("Register Failed! Please fill in all inputs with valid information.")
         else:
