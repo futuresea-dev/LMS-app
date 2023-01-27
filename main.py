@@ -36,7 +36,7 @@ icons_path = os.path.join(tools_path, 'Barare.ttf')
 Config.set('kivy', 'default_font', [icons_path])
 
 # SET API URL
-HOST_URL = 'http://8.12.17.224:8000/'
+HOST_URL = 'http://10.0.0.2:8000/'
 ca_file = certifi.where()
 # user login token
 userToken = StringProperty('')
