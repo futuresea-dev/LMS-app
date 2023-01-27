@@ -37,7 +37,7 @@ version = 1.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,kivymd,requests,email_validator,pillow,certifi,charset-normalizer,docutils,idna,kivy-garden,pygments,urllib3,chardet
+requirements = python3,kivy,kivymd,requests,dnspython,email_validator,pillow,certifi,charset-normalizer,docutils,idna,kivy-garden,pygments,urllib3,chardet
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
