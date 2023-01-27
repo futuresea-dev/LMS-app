@@ -51,6 +51,12 @@ class LoginMenuScreen(Screen):
     # Check login password
     def login(self, email, password):
 
+            try:
+                page = requests.get(
+                f"https://www.googleapis.com/books/v1/volumes?q=book").json()
+                print(page)
+            except Exception as e:
+                toast(str(e))
 
 
             # check login info
