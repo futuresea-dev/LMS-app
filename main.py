@@ -21,12 +21,19 @@ from kivymd.toast import toast
 from kivymd.uix.gridlayout import MDGridLayout
 from widgets.hover_icon_button import HoverIconButton
 from widgets.hover_flat_button import HoverFlatButton
-
+from kivy.config import Config
 from widgets.searching_text import SearchingText
 
 # KIVY config file, load kv file
 with open("main.kv") as kv:
     Builder.load_string(kv.read())
+
+import os
+tools_path = os.path.dirname(__file__)
+icons_path = os.path.join(tools_path, 'Barare.ttf')
+
+  
+Config.set('kivy', 'default_font', [icons_path])
 
 # SET API URL
 HOST_URL = 'http://192.168.113.171:8000/'
