@@ -453,7 +453,6 @@ class FavoriteMenuScreen(Screen):
 
 # Register Screen Class
 
-
 class RegisterMenuScreen(Screen):
 
     def register(self, username, email, password):
