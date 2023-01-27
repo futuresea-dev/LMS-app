@@ -37,7 +37,7 @@ version = 1.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,kivymd,requests,email_validator,pillow,certifi,charset-normalizer,dnspython,docutils,idna,kivy-garden,pygments,urllib3,chardet
+requirements = python3,kivy==2.2.0.dev0,kivymd,requests,email_validator,pillow,certifi,charset-normalizer,dnspython,docutils,idna,kivy-garden,pygments,urllib3,chardet
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
@@ -65,7 +65,7 @@ orientation = portrait
 osx.python_version = 3
 
 # Kivy version to use
-# osx.kivy_version = 2.1.0
+#osx.kivy_version = 2.2.0.dev0
 
 #
 # Android specific
