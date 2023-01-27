@@ -10,7 +10,6 @@ from functools import partial
 import requests
 from kivy.clock import mainthread
 from kivy.lang import Builder
-from kivy.network.urlrequest import UrlRequest
 from kivy.properties import ListProperty, StringProperty, NumericProperty
 # Imports
 from kivy.uix.gridlayout import GridLayout
