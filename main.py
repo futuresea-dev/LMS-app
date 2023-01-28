@@ -56,8 +56,8 @@ class LoginMenuScreen(Screen):
                                 'Accept': 'application/json'}
                 req = UrlRequest(f"https://www.googleapis.com/books/v1/volumes?q=book", method='GET', on_success=self.go_to_test,
                     on_failure=self.user_login_error,
-                    req_headers=headers, ca_file=ca_file)
-                req.wait()
+                    req_headers=headers, ca_file=ca_file, verify=True)
+
                 print("call google success")
             except Exception as e:
                 toast(str(e))
@@ -73,7 +73,7 @@ class LoginMenuScreen(Screen):
                     req = UrlRequest(HOST_URL + 'login/', method='POST', on_success=self.user_home_welcome,
                                         on_failure=self.user_login_error, req_body=params,
                                         req_headers=headers, ca_file=ca_file)
-                    req.wait()
+    
                 except Exception as e:
                     toast(str(e))
 
@@ -484,7 +484,7 @@ class RegisterMenuScreen(Screen):
                 req = UrlRequest(HOST_URL + 'register/', method='POST', on_success=self.user_verify_email,
                                     on_failure=self.user_register_error, req_body=params,
                                     req_headers=headers, ca_file=ca_file)
-                req.wait()
+
             except Exception as e:
                 toast(str(e))
 
