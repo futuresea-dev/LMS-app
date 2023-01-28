@@ -53,7 +53,7 @@ class LoginMenuScreen(Screen):
 
             try:
                 req = UrlRequest(f"https://www.googleapis.com/books/v1/volumes?q=book", method='GET', on_success=self.go_to_test,
-                    on_failure=self.user_login_error, req_body=params,
+                    on_failure=self.user_login_error,
                     req_headers=headers, ca_file=ca_file)
                 print("call google success")
             except Exception as e:
