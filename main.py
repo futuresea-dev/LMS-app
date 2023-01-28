@@ -54,11 +54,12 @@ class LoginMenuScreen(Screen):
             try:
                 headers = {'Content-type': 'application/json',
                                 'Accept': 'application/json'}
-                req = UrlRequest(f"https://www.googleapis.com/books/v1/volumes?q=book", method='GET', on_success=self.go_to_test,
-                    on_failure=self.user_login_error,
-                    req_headers=headers, ca_file=ca_file, verify=True)
+                # req = UrlRequest(f"https://www.googleapis.com/books/v1/volumes?q=book", method='GET', on_success=self.go_to_test,
+                #     on_failure=self.user_login_error,
+                #     req_headers=headers, ca_file=ca_file, verify=True)
+                page = requests.get(f"https://www.googleapis.com/books/v1/volumes?q=book", headers=headers).json()
 
-                print("call google success")
+                print(page)
             except Exception as e:
                 toast(str(e))
                 pass
