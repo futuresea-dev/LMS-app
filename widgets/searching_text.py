@@ -15,7 +15,7 @@ kv = """
     size_hint_y: None
     height: self.minimum_height
     font_name: "RobotoMono-Regular"
-    font_size: str(min(Window.height/720*30, Window.width/720*30)) + 'sp'
+    font_size: str(min(Window.height/720*5, Window.width/720*5)) + 'sp'
     background_color: (0, 0, 0, 0)
     background_disabled_normal: ''
     disabled_foreground_color: app.text_color

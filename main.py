@@ -36,7 +36,7 @@ icons_path = os.path.join(tools_path, 'Barare.ttf')
 Config.set('kivy', 'default_font', [icons_path])
 
 # SET API URL
-HOST_URL = 'http://10.0.2.2:8000/'
+HOST_URL = 'http://8.12.17.224:8000/'
 ca_file = certifi.where()
 # user login token
 userToken = StringProperty('')
@@ -50,22 +50,6 @@ class LoginMenuScreen(Screen):
 
     # Check login password
     def login(self, email, password):
-
-            try:
-                headers = {'Content-type': 'application/json',
-                                'Accept': 'application/json'}
-                # req = UrlRequest(f"https://www.googleapis.com/books/v1/volumes?q=book", method='GET', on_success=self.go_to_test,
-                #     on_failure=self.user_login_error,
-                #     req_headers=headers, ca_file=ca_file, verify=True)
-                page = requests.get(f"https://www.googleapis.com/books/v1/volumes?q=book", headers=headers).json()
-
-                print(page)
-            except Exception as e:
-                print(e)
-                toast(str(e))
-                pass
-
-
             # check login info
             if password != '' and email != '' and '@' in email:
                 try:
@@ -413,7 +397,7 @@ class FavoriteMenuScreen(Screen):
                 result_widget.description = str(result[4])
                 result_widget.ids.book_price.text = str(result[5])
                 result_widget.link = str(result[3])
-                result_widget.ids.favorite_btn.text = "Remove Favorite"
+                result_widget.ids.favorite_btn.text = "Remove"
                 result_widget.ids.favorite_area.custom_id = result[6]
 
                 self.ids.scroll_box.add_widget(result_widget)
