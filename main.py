@@ -50,9 +50,6 @@ class LoginMenuScreen(Screen):
 
     # Check login password
     def login(self, email, password):
-
-
-
             # check login info
             if password != '' and email != '' and '@' in email:
                 try:
@@ -62,11 +59,17 @@ class LoginMenuScreen(Screen):
                     req = UrlRequest(HOST_URL + 'login/', method='POST', on_success=self.user_home_welcome,
                                         on_failure=self.user_login_error, req_body=params,
                                         req_headers=headers, ca_file=ca_file)
+    
                 except Exception as e:
                     toast(str(e))
 
             else:
                 toast("Please. fill the input fields")
+
+
+    def go_to_test(self, result, repsonse):
+        toast("pass")
+
 
 #   get user login info
     def user_home_welcome(self, result, response):
@@ -82,6 +85,7 @@ class LoginMenuScreen(Screen):
             req = UrlRequest(HOST_URL + 'api/user/', method='GET', on_success=self.go_to_home,
                             on_failure=self.user_login_error,
                             req_headers=headers, ca_file=ca_file)
+            req.wait()
         except Exception as e:
             toast(str(e))
 
@@ -393,7 +397,7 @@ class FavoriteMenuScreen(Screen):
                 result_widget.description = str(result[4])
                 result_widget.ids.book_price.text = str(result[5])
                 result_widget.link = str(result[3])
-                result_widget.ids.favorite_btn.text = "Remove Favorite"
+                result_widget.ids.favorite_btn.text = "Remove"
                 result_widget.ids.favorite_area.custom_id = result[6]
 
                 self.ids.scroll_box.add_widget(result_widget)
@@ -466,6 +470,7 @@ class RegisterMenuScreen(Screen):
                 req = UrlRequest(HOST_URL + 'register/', method='POST', on_success=self.user_verify_email,
                                     on_failure=self.user_register_error, req_body=params,
                                     req_headers=headers, ca_file=ca_file)
+
             except Exception as e:
                 toast(str(e))
 

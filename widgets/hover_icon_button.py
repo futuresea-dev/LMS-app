@@ -57,7 +57,7 @@ kv = """
 <ToolTip>:
     color: app.text_color
     font_name: "RobotoMono-Regular"
-    font_size: str(min(Window.height/720*22, Window.width/720*22)) + 'sp'
+    font_size: str(min(Window.height/720*5, Window.width/720*5)) + 'sp'
     size_hint: None, None
     size: self.texture_size[0]+20, self.texture_size[1]+20
     canvas.before:

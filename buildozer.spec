@@ -13,7 +13,7 @@ package.domain = org.lms
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,ttf,atlas
+source.include_exts = py,png,jpg,kv,ttf,json,atlas
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*, modules/*, widgets/*
@@ -37,7 +37,7 @@ version = 1.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = hostpython3,python3,kivy,kivymd,requests,pillow,certifi,charset-normalizer,docutils,idna,kivy-garden,pygments,urllib3,chardet,pyopenssl,openssl
+requirements = hostpython3,python3,kivy,android,kivymd,requests,pillow,certifi,charset-normalizer,docutils,idna,kivy-garden,pygments,urllib3,chardet,pyopenssl,openssl
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy

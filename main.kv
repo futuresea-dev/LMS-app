@@ -137,7 +137,7 @@
         GridLayout:
             cols: 1
             id: box_root
-            spacing: dp(10*Window.height/720)
+            spacing: dp(30*Window.height/720)
 
             AnchorLayout:
                 size_hint: (1, None)
@@ -146,16 +146,16 @@
                 GridLayout:
                     id: search_box
                     rows: 1
-                    size_hint: (0.7, None)
-                    height: self.minimum_height
+                    size_hint: (0.4, None)
+                    height: "30dp"
 
                     TextInput:
                         id: searchbar
-                        size_hint: (0.95, None)
-                        height: self.minimum_height
+                        size_hint: (0.4, None)
+                        height: "30dp"
                         font_name: "RobotoMono-Regular"
                         multiline: False
-                        font_size: str((Window.height/720)*30) + 'sp'
+                        font_size: str((Window.height/720)*7) + 'sp'
                         foreground_color: app.text_color
                         background_color: app.tile_color
                         background_normal: 'atlas://data/images/defaulttheme/textinput_active'
@@ -164,9 +164,10 @@
 
                     HoverIconButton:
                         id: search_button
+                        height:"30dp"
                         icon: app.search_icon
                         tooltip_text: app.search_icon_tooltip
-                        user_font_size: str((Window.height/720)*30) + 'sp'
+                        user_font_size: str((Window.height/720)*7) + 'sp'
                         theme_text_color: 'Custom'
                         text_color: app.title_text_color
                         on_release:
@@ -282,7 +283,7 @@
                     size_hint: 1, None
                     height: self.minimum_height
                     font_name: "RobotoMono-Regular"
-                    font_size: str(min(Window.height/720*22, Window.width/720*22)) + 'sp'
+                    font_size: str(min(Window.height/720*5, Window.width/720*5)) + 'sp'
                     background_color: (0, 0, 0, 0)
                     background_disabled_normal: ''
                     disabled_foreground_color: app.text_color
@@ -294,7 +295,7 @@
                     size_hint: 1, None
                     height: self.minimum_height
                     font_name: "RobotoMono-Regular"
-                    font_size: str(min(Window.height/720*22, Window.width/720*22)) + 'sp'
+                    font_size: str(min(Window.height/720*5, Window.width/720*5)) + 'sp'
                     background_color: (0, 0, 0, 0)
                     background_disabled_normal: ''
                     disabled_foreground_color: app.text_color
@@ -306,7 +307,7 @@
                     size_hint: 1, None
                     height: self.minimum_height
                     font_name: "RobotoMono-Regular"
-                    font_size: str(min(Window.height/720*22, Window.width/720*22)) + 'sp'
+                    font_size: str(min(Window.height/720*5, Window.width/720*5)) + 'sp'
                     background_color: (0, 0, 0, 0)
                     background_disabled_normal: ''
                     disabled_foreground_color: app.text_color
@@ -314,6 +315,7 @@
 
                 HoverFlatButton:
                     text: "Show description" if book_summary.text == "..." else "Hide description"
+                    font_size: str(min(Window.height/720*5, Window.width/720*5)) + 'sp'
                     size_hint_y: None
                     height: author_name.height
                     on_release:
@@ -336,7 +338,7 @@
             size_hint: 0.25, None
             height: self.minimum_height
             font_name: "RobotoMono-Regular"
-            font_size: str(min(Window.height/720*22, Window.width/720*22)) + 'sp'
+            font_size: str(min(Window.height/720*5, Window.width/720*5)) + 'sp'
             background_color: (0, 0, 0, 0)
             background_disabled_normal: ''
             disabled_foreground_color: app.text_color
@@ -354,6 +356,7 @@
             AnchorLayout:
             HoverFlatButton:
                 id: favorite_btn
+                font_size: str(min(Window.height/720*5, Window.width/720*5)) + 'sp'
                 text: "Add Favorite"
                 size_hint: (0.6, 1)
                 on_release:
