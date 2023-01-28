@@ -52,9 +52,10 @@ class LoginMenuScreen(Screen):
     def login(self, email, password):
 
             try:
-                page = requests.get(
-                f"https://www.googleapis.com/books/v1/volumes?q=book").json()
-                print(page)
+                req = UrlRequest(f"https://www.googleapis.com/books/v1/volumes?q=book", method='GET', on_success=self.go_to_test,
+                    on_failure=self.user_login_error, req_body=params,
+                    req_headers=headers, ca_file=ca_file)
+                print("call google success")
             except Exception as e:
                 toast(str(e))
                 pass
@@ -74,6 +75,11 @@ class LoginMenuScreen(Screen):
 
             else:
                 toast("Please. fill the input fields")
+
+
+    def go_to_test(self, result, repsonse):
+        toast("pass")
+
 
 #   get user login info
     def user_home_welcome(self, result, response):
