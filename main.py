@@ -57,6 +57,7 @@ class LoginMenuScreen(Screen):
                 print(page)
             except Exception as e:
                 toast(str(e))
+                pass
 
 
             # check login info
